@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 import logging
 from os import mkdir
-from os.path import join, dirname
+from os.path import join
 
 from PIL import Image
 from jinja2 import Environment, FileSystemLoader
@@ -11,6 +11,8 @@ from jinja2 import Environment, FileSystemLoader
 from domotz_camera_tool.client import ApiClient
 
 __author__ = 'Iacopo Papalini <iacopo@domotz.com>'
+
+from domotz_camera_tool.assets import ASSETS_DIR
 
 from domotz_camera_tool.helpers.async_pool import gather_max_parallelism
 
@@ -20,7 +22,6 @@ _logger = logging.getLogger(__name__)
 
 DESCRIPTION = "Compose the snapshots of all the cameras of a site in a HTML Page"
 COMMAND_NAME = 'compose'
-ASSETS_DIR = join(dirname(__file__), 'assets')
 
 
 def positive(value):

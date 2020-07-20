@@ -4,10 +4,12 @@ import json
 import logging
 from collections import namedtuple
 from io import BytesIO
+from os.path import join
 
 from PIL import Image
 
 from domotz_camera_tool.client import ApiClient
+from domotz_camera_tool.assets import ASSETS_DIR
 from domotz_camera_tool.helpers.async_pool import gather_max_parallelism
 
 Camera = namedtuple('Camera', 'id,name,main_ip,make,model,status,last_status_change,zone,room')
@@ -62,9 +64,15 @@ class CamerasHelper:
             return STATUS_DOWN
 
     async def get_snapshot(self, agent_id, device_id) -> Image:
-        data = await self.client.get_bytes('agent', agent_id, 'device', device_id, 'multimedia', 'camera', 'snapshot')
-        image = Image.open(BytesIO(data))
-        return image
+        try:
+            data = await self.client.get_bytes('agent', agent_id, 'device', device_id, 'multimedia', 'camera',
+                                               'snapshot')
+            image = Image.open(BytesIO(data))
+            return image
+        except RuntimeError as e:
+            _logger.warning(e)
+            _logger.info("Returning broken image for device %s", device_id)
+            return Image.open(join(ASSETS_DIR, 'offline.jpg'))
 
     async def fetch_type_ids_with_capability(self, capability) -> [int]:
         ret = []
