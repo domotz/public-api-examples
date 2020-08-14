@@ -17,7 +17,7 @@ for type_ in types:
 all_devices = requests.get(endpoint + f'agent/{agent_id}/device', headers={'X-Api-Key': api_key}).json()
 
 for device in all_devices:
-    if 'ONLINE' == device['status']:
+    if 'ONLINE' == device.get('status', 'OFFLINE'):
         print(device['id'],
               device['display_name'],
               device['vendor'],
