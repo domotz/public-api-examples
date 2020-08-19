@@ -2,6 +2,7 @@
 # API endpoint and key are passed as first and second command line parameter
 # Agent id is passed as third parameter
 import sys
+
 import requests
 
 endpoint, api_key, agent_id = sys.argv[1:]
@@ -17,8 +18,9 @@ def print_camera(device):
 
 for device in all_devices:
     try:
-        if device['type']['detected_id'] in camera_types and 'ONLINE' == device['status']:
-            if device['authentication_status'] in ('AUTHENTICATED', 'NO_AUTHENTICATION'):
-                print_camera(device)
+        if (device['type']['detected_id'] in camera_types
+                and device['status'] == 'ONLINE'
+                and device['authentication_status'] in ('AUTHENTICATED', 'NO_AUTHENTICATION')):
+            print_camera(device)
     except KeyError:
         pass  # just ignore ineligible devices
